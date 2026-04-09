@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabase/client'
 import BottomNav from '@/components/layout/BottomNav'
 import { formatCurrency, formatDate } from '@/lib/utils/format'
 import type { Profile, Wallet, Transfer } from '@/types'
-import { IS_DEMO, getDemoProfile, getDemoWallet, DEMO_TRANSFERS, DEMO_WALLET_USDC, DEMO_WALLET_XAF } from '@/lib/demo/data'
+import { getIsDemoMode, getDemoProfile, getDemoWallet, DEMO_TRANSFERS, DEMO_WALLET_USDC, DEMO_WALLET_XAF } from '@/lib/demo/data'
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -20,7 +20,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     async function load() {
-      if (IS_DEMO) {
+      if (getIsDemoMode()) {
         const p = getDemoProfile()
         setProfile(p)
         setWallet(getDemoWallet())

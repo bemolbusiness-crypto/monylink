@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/client'
 import BottomNav from '@/components/layout/BottomNav'
 import { formatCurrency } from '@/lib/utils/format'
 import { WITHDRAWAL_FEE_EUR } from '@/lib/utils/rates'
-import { IS_DEMO, DEMO_WALLET } from '@/lib/demo/data'
+import { getIsDemoMode, DEMO_WALLET } from '@/lib/demo/data'
 
 type Step = 'amount' | 'rib' | 'confirm' | 'success'
 
@@ -25,7 +25,7 @@ export default function WithdrawPage() {
 
   useEffect(() => {
     async function load() {
-      if (IS_DEMO) {
+      if (getIsDemoMode()) {
         setUserId(DEMO_WALLET.user_id)
         setBalance(DEMO_WALLET.balance)
         return
@@ -47,6 +47,16 @@ export default function WithdrawPage() {
   async function handleWithdraw() {
     if (!userId || amountNum <= 0 || amountNum > balance) return
     setLoading(true)
+
+    // Mode sandbox — simuler le virement sans appel SEPA réel
+    if (getIsDemoMode()) {
+      await new Promise(r => setTimeout(r, 1200))
+      setBalance(b => Math.max(0, b - amountNum))
+      setStep('success')
+      setLoading(false)
+      return
+    }
+
     try {
       const res = await fetch('/api/withdraw', {
         method: 'POST',

@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import BottomNav from '@/components/layout/BottomNav'
-import { IS_DEMO, DEMO_WALLET_EUR, DEMO_WALLET_USDC } from '@/lib/demo/data'
+import { getIsDemoMode, DEMO_WALLET_EUR, DEMO_WALLET_USDC } from '@/lib/demo/data'
 
 const EUR_USDC_RATE = 1.09 // 1 EUR ≈ 1.09 USDC (USDC ≈ USD)
 
@@ -24,7 +24,7 @@ export default function ConvertPage() {
 
   useEffect(() => {
     async function load() {
-      if (IS_DEMO) {
+      if (getIsDemoMode()) {
         setBalanceEur(DEMO_WALLET_EUR.balance)
         setBalanceUsdc(DEMO_WALLET_USDC.balance)
         setUserId(DEMO_WALLET_EUR.user_id)
@@ -53,7 +53,7 @@ export default function ConvertPage() {
     if (!canConvert || !userId) return
     setConverting(true)
 
-    if (IS_DEMO) {
+    if (getIsDemoMode()) {
       await new Promise(r => setTimeout(r, 1200))
       const usdc = parseFloat(usdcOut)
       setBalanceEur(b => Math.round((b - amountNum) * 100) / 100)

@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/client'
 import BottomNav from '@/components/layout/BottomNav'
 import { formatCurrency, formatDate } from '@/lib/utils/format'
 import type { PaymentRequest, Withdrawal } from '@/types'
-import { IS_DEMO, DEMO_TOPUPS, DEMO_WITHDRAWALS } from '@/lib/demo/data'
+import { getIsDemoMode, DEMO_TOPUPS, DEMO_WITHDRAWALS } from '@/lib/demo/data'
 
 type Item = { type: 'topup'; item: PaymentRequest } | { type: 'withdrawal'; item: Withdrawal }
 type Filter = 'all' | 'topup' | 'withdrawal'
@@ -23,7 +23,7 @@ export default function HistoryPage() {
 
   useEffect(() => {
     async function load() {
-      if (IS_DEMO) {
+      if (getIsDemoMode()) {
         const merged: Item[] = [
           ...DEMO_TOPUPS.map(t => ({ type: 'topup' as const, item: t })),
           ...DEMO_WITHDRAWALS.map(w => ({ type: 'withdrawal' as const, item: w })),

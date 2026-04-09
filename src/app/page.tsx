@@ -353,7 +353,7 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
-          <Link href="/signup" className="btn-purple" style={{ display: 'inline-flex', padding: '16px 36px', fontSize: 16, borderRadius: 14 }}>
+          <Link href="/demo" className="btn-purple" style={{ display: 'inline-flex', padding: '16px 36px', fontSize: 16, borderRadius: 14 }}>
             ▶ &nbsp;Essayer la version démo
           </Link>
           <div style={{ fontSize: 12, color: 'var(--w40)', marginTop: 14 }}>Aucune donnée réelle · Aucune inscription requise</div>

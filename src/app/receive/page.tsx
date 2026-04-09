@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import BottomNav from '@/components/layout/BottomNav'
-import { IS_DEMO, DEMO_PROFILE_EUROPE } from '@/lib/demo/data'
+import { getIsDemoMode, DEMO_PROFILE_EUROPE } from '@/lib/demo/data'
 
 const MONYLINK_OM_NUMBER = '+237 6XX XXX XXX'
 const MONYLINK_MTN_NUMBER = '+237 6XX XXX XXX'
@@ -18,7 +18,7 @@ export default function ReceivePage() {
 
   useEffect(() => {
     async function load() {
-      if (IS_DEMO) { setMlkId(DEMO_PROFILE_EUROPE.monylink_id); return }
+      if (getIsDemoMode()) { setMlkId(DEMO_PROFILE_EUROPE.monylink_id); return }
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { router.push('/login'); return }

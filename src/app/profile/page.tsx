@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import BottomNav from '@/components/layout/BottomNav'
 import { COUNTRIES, type Profile } from '@/types'
-import { IS_DEMO, DEMO_PROFILE } from '@/lib/demo/data'
+import { getIsDemoMode, clearDemoSession, DEMO_PROFILE } from '@/lib/demo/data'
 
 export default function ProfilePage() {
   const router = useRouter()
@@ -14,7 +14,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     async function load() {
-      if (IS_DEMO) { setProfile(DEMO_PROFILE); setLoading(false); return }
+      if (getIsDemoMode()) { setProfile(DEMO_PROFILE); setLoading(false); return }
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { router.push('/login'); return }
@@ -26,6 +26,11 @@ export default function ProfilePage() {
   }, [router])
 
   async function handleLogout() {
+    if (getIsDemoMode()) {
+      clearDemoSession()
+      router.push('/')
+      return
+    }
     const supabase = createClient()
     await supabase.auth.signOut()
     router.push('/')

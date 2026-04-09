@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import BottomNav from '@/components/layout/BottomNav'
 import { formatCurrency } from '@/lib/utils/format'
-import { IS_DEMO, DEMO_PROFILE, DEMO_WALLET } from '@/lib/demo/data'
+import { getIsDemoMode, DEMO_PROFILE, DEMO_WALLET } from '@/lib/demo/data'
 
 interface Card {
   id: string
@@ -27,7 +27,7 @@ export default function CardPage() {
 
   useEffect(() => {
     async function load() {
-      if (IS_DEMO) {
+      if (getIsDemoMode()) {
         // Carte démo pré-activée
         setCard({ id: 'demo-card', last4: '4242', expiry: '12/27', holder_name: DEMO_PROFILE.full_name, status: 'active', spending_limit_eur: 1000 })
         setBalance(DEMO_WALLET.balance)
@@ -50,6 +50,13 @@ export default function CardPage() {
 
   async function createCard() {
     setCreating(true)
+    // Mode sandbox — créer une carte fictive sans appel Swan
+    if (getIsDemoMode()) {
+      await new Promise(r => setTimeout(r, 1000))
+      setCard({ id: 'demo-card-new', last4: '4242', expiry: '12/27', holder_name: DEMO_PROFILE.full_name, status: 'active', spending_limit_eur: 1000 })
+      setCreating(false)
+      return
+    }
     const res = await fetch('/api/card', { method: 'POST' })
     const data = await res.json()
     if (data.card) setCard(data.card)
@@ -59,6 +66,13 @@ export default function CardPage() {
   async function toggleFreeze() {
     if (!card) return
     setToggling(true)
+    // Mode sandbox — basculer localement
+    if (getIsDemoMode()) {
+      await new Promise(r => setTimeout(r, 600))
+      setCard(c => c ? { ...c, status: c.status === 'active' ? 'frozen' : 'active' } : c)
+      setToggling(false)
+      return
+    }
     const action = card.status === 'active' ? 'suspend' : 'resume'
     const res = await fetch('/api/card', {
       method: 'PATCH',

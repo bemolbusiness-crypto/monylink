@@ -7,7 +7,7 @@ import BottomNav from '@/components/layout/BottomNav'
 import { toEur, calculateFee, getCurrencyLabel } from '@/lib/utils/rates'
 import { COUNTRIES, METHODS_BY_COUNTRY, METHOD_PROVIDER, type MobileMoneyMethod } from '@/types'
 import { formatCurrency } from '@/lib/utils/format'
-import { IS_DEMO, DEMO_PROFILE } from '@/lib/demo/data'
+import { getIsDemoMode, DEMO_PROFILE } from '@/lib/demo/data'
 
 type Step = 'amount' | 'method' | 'reference' | 'pending'
 
@@ -25,7 +25,7 @@ export default function TopupPage() {
 
   useEffect(() => {
     async function load() {
-      if (IS_DEMO) {
+      if (getIsDemoMode()) {
         setUserId(DEMO_PROFILE.id)
         setMonylinkId(DEMO_PROFILE.monylink_id)
         setUserCountry(DEMO_PROFILE.country)
@@ -58,6 +58,17 @@ export default function TopupPage() {
   async function createPaymentRequest() {
     if (!userId || !amountNum) return
     setLoading(true)
+
+    // Mode sandbox — simuler la génération de référence sans Supabase
+    if (getIsDemoMode()) {
+      await new Promise(r => setTimeout(r, 900))
+      const ref = `${monylinkId}-DEMO-${Date.now().toString(36).toUpperCase()}`
+      setReference(ref)
+      setStep('reference')
+      setLoading(false)
+      return
+    }
+
     const supabase = createClient()
     const ref = `${monylinkId}-${Date.now()}`
     setReference(ref)

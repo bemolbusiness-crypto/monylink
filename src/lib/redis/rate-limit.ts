@@ -1,7 +1,11 @@
-import { redis } from './client'
+import { getRedis } from './client'
 import { NextResponse } from 'next/server'
 
 export async function rateLimit(key: string, limit: number, windowSeconds: number): Promise<boolean> {
+  const redis = getRedis()
+  // Redis non configuré → laisser passer (pas de rate-limit en dev / sandbox)
+  if (!redis) return true
+
   const now = Date.now()
   const windowKey = `ratelimit:${key}:${Math.floor(now / (windowSeconds * 1000))}`
   const count = await redis.incr(windowKey)

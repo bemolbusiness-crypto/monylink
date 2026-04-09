@@ -151,11 +151,20 @@ export const DEMO_WITHDRAWALS: Withdrawal[] = [
 ]
 
 // ─── HELPERS ─────────────────────────────────
+
+// Détection runtime (cookie sandbox) — à utiliser dans les useEffect
+export { getIsDemoMode, clearDemoSession } from './session'
+
+// Constante build-time (env var) — gardée pour compat
 export const IS_DEMO = process.env.NEXT_PUBLIC_DEMO_MODE === 'true'
 
-// Profil actif en démo — basé sur NEXT_PUBLIC_DEMO_REGION
+// Profil actif en démo
+// Priorité : sessionStorage (choix sur /demo) > env var > 'europe'
 export function getDemoProfile(): Profile {
-  const region = process.env.NEXT_PUBLIC_DEMO_REGION ?? 'europe'
+  let region: string = process.env.NEXT_PUBLIC_DEMO_REGION ?? 'europe'
+  if (typeof window !== 'undefined') {
+    region = sessionStorage.getItem('ml-demo-region') ?? region
+  }
   return region === 'africa' ? DEMO_PROFILE_AFRICA : DEMO_PROFILE_EUROPE
 }
 

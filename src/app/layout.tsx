@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { ClerkProvider } from '@clerk/nextjs'
 import { PostHogProvider } from '@/components/providers/PostHogProvider'
+import DemoBanner from '@/components/demo/DemoBanner'
 import "./globals.css";
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -26,6 +27,7 @@ export default function RootLayout({
       <html lang="fr" className={plusJakarta.variable} data-scroll-behavior="smooth">
         <body className="min-h-dvh">
           <PostHogProvider>
+            <DemoBanner />
             {children}
           </PostHogProvider>
         </body>

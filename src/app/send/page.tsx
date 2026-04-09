@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import BottomNav from '@/components/layout/BottomNav'
-import { IS_DEMO, getDemoProfile } from '@/lib/demo/data'
+import { getIsDemoMode, getDemoProfile } from '@/lib/demo/data'
 import { MOBILE_MONEY_METHODS } from '@/types'
 
 const RATE = 700
@@ -32,7 +32,7 @@ export default function SendPage() {
 
   useEffect(() => {
     async function load() {
-      if (IS_DEMO) {
+      if (getIsDemoMode()) {
         const p = getDemoProfile()
         setProfile({ id: p.id, region: p.region, phone: p.phone, country: p.country })
         setPhone(p.phone)
@@ -61,7 +61,7 @@ export default function SendPage() {
     if (!fcfaNum || !phone || !mlkIdClean) return
     setPaying(true)
 
-    if (IS_DEMO) {
+    if (getIsDemoMode()) {
       await new Promise(r => setTimeout(r, 1500))
       setPaymentUrl('https://sandbox.monetbil.com/pay/demo')
       setReference(`${mlkIdClean}-DEMO-${Date.now().toString(36).toUpperCase()}`)
