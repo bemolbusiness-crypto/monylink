@@ -6,7 +6,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase/server'
-import { redis } from '@/lib/redis/client'
+import { getRedis } from '@/lib/redis/client'
 import { toEur, calculateFee } from '@/lib/utils/rates'
 
 export async function POST(req: NextRequest) {
@@ -32,8 +32,11 @@ export async function POST(req: NextRequest) {
 
     // Idempotency : éviter le double-crédit
     const idempotencyKey = `webhook:monetbil:${reference}`
-    const isNew = await redis.set(idempotencyKey, '1', { nx: true, ex: 86400 })
-    if (!isNew) return NextResponse.json({ received: true, duplicate: true })
+    const redis = getRedis()
+    if (redis) {
+      const isNew = await redis.set(idempotencyKey, '1', { nx: true, ex: 86400 })
+      if (!isNew) return NextResponse.json({ received: true, duplicate: true })
+    }
     const amountLocal: number = parseFloat(body.amount ?? '0')
     const currency: string = body.currency ?? 'XAF'
 
