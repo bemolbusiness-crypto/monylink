@@ -74,6 +74,11 @@ export default function DashboardPage() {
   const [transfers, setTransfers] = useState<Transfer[]>([])
   const [loading, setLoading] = useState(true)
   const [copied, setCopied] = useState(false)
+  const [liveRate, setLiveRate] = useState<number | null>(null)
+
+  useEffect(() => {
+    fetch('/api/rates').then(r => r.json()).then(d => setLiveRate(d.rates?.XAF ?? null)).catch(() => {})
+  }, [])
 
   useEffect(() => {
     async function load() {
@@ -287,6 +292,11 @@ export default function DashboardPage() {
               Taux MonyLink
             </p>
             <p style={{ fontWeight: 800, fontSize: 15 }}>1 EUR = 700 FCFA</p>
+            {liveRate && (
+              <p style={{ fontSize: 10, color: 'var(--w40)', marginTop: 2 }}>
+                Marché : 1 EUR = {Math.round(liveRate)} FCFA
+              </p>
+            )}
           </div>
           <div style={{ textAlign: 'right' }}>
             <p style={{ fontSize: 10, fontWeight: 700, color: 'var(--w40)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 3 }}>

@@ -204,7 +204,9 @@ export default function TopupPage() {
               </div>
               <div style={{ background: 'var(--bg3)', borderRadius: 12, padding: '14px 16px', textAlign: 'center' as const }}>
                 <div style={{ fontSize: 11, color: 'var(--w40)', marginBottom: 4, fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: 1 }}>Numéro {methodInfo?.label}</div>
-                <div style={{ fontFamily: 'monospace', fontSize: 22, fontWeight: 800, letterSpacing: 2 }}>+237 690 000 000</div>
+                <div style={{ fontFamily: 'monospace', fontSize: 22, fontWeight: 800, letterSpacing: 2 }}>
+                  {process.env.NEXT_PUBLIC_COLLECT_PHONE || '+237 690 000 000'}
+                </div>
                 <div style={{ fontSize: 11, color: 'var(--w40)', marginTop: 4 }}>Compte de collecte MonyLink</div>
               </div>
 

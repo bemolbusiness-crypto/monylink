@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import BottomNav from '@/components/layout/BottomNav'
 import { COUNTRIES, type Profile } from '@/types'
@@ -17,6 +18,13 @@ export default function ProfilePage() {
   const router = useRouter()
   const [profile, setProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
+  const [showPwModal, setShowPwModal] = useState(false)
+  const [pwCurrent, setPwCurrent] = useState('')
+  const [pwNew, setPwNew] = useState('')
+  const [pwConfirm, setPwConfirm] = useState('')
+  const [pwLoading, setPwLoading] = useState(false)
+  const [pwError, setPwError] = useState('')
+  const [pwDone, setPwDone] = useState(false)
 
   useEffect(() => {
     async function load() {
@@ -30,6 +38,18 @@ export default function ProfilePage() {
     }
     load()
   }, [router])
+
+  async function handleChangePassword() {
+    if (!pwNew || pwNew !== pwConfirm) { setPwError('Les mots de passe ne correspondent pas'); return }
+    if (pwNew.length < 8) { setPwError('8 caractères minimum'); return }
+    setPwLoading(true); setPwError('')
+    const supabase = createClient()
+    const { error } = await supabase.auth.updateUser({ password: pwNew })
+    if (error) { setPwError(error.message); setPwLoading(false); return }
+    setPwDone(true)
+    setTimeout(() => { setShowPwModal(false); setPwDone(false); setPwNew(''); setPwConfirm(''); setPwCurrent('') }, 1500)
+    setPwLoading(false)
+  }
 
   async function handleLogout() {
     if (getIsDemoMode()) { clearDemoSession(); router.push('/'); return }
@@ -55,6 +75,44 @@ export default function ProfilePage() {
 
   return (
     <div className="page-wrap">
+
+      {/* ── MODAL CHANGER MOT DE PASSE ── */}
+      {showPwModal && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 100, background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
+          onClick={e => { if (e.target === e.currentTarget) setShowPwModal(false) }}>
+          <div style={{ background: 'var(--bg2)', border: '0.5px solid var(--border-p)', borderRadius: '24px 24px 0 0', padding: '24px 20px 40px', width: '100%', maxWidth: 480 }}>
+            <div style={{ width: 36, height: 4, borderRadius: 2, background: 'var(--border)', margin: '0 auto 20px' }} />
+            <h3 style={{ fontSize: 18, fontWeight: 800, marginBottom: 20 }}>Changer le mot de passe</h3>
+
+            {pwDone ? (
+              <div style={{ textAlign: 'center', padding: '20px 0' }}>
+                <div style={{ fontSize: 40, marginBottom: 10 }}>✓</div>
+                <p style={{ fontWeight: 700, color: 'var(--teal)' }}>Mot de passe mis à jour !</p>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: 'var(--w40)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.5 }}>Nouveau mot de passe</label>
+                  <input className="ml-input" type="password" placeholder="8 caractères minimum"
+                    value={pwNew} onChange={e => setPwNew(e.target.value)} />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: 'var(--w40)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.5 }}>Confirmer</label>
+                  <input className="ml-input" type="password" placeholder="Répète le mot de passe"
+                    value={pwConfirm} onChange={e => setPwConfirm(e.target.value)} />
+                </div>
+                {pwError && <div className="error-box">{pwError}</div>}
+                <button className="btn-primary" disabled={pwLoading || !pwNew || !pwConfirm} onClick={handleChangePassword}>
+                  {pwLoading ? 'Mise à jour...' : 'Confirmer →'}
+                </button>
+                <button onClick={() => setShowPwModal(false)} style={{ background: 'none', border: 'none', color: 'var(--w40)', fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}>
+                  Annuler
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* ── HERO ── */}
       <div style={{
@@ -150,32 +208,58 @@ export default function ProfilePage() {
         {/* ── SÉCURITÉ ── */}
         <div style={{ background: 'var(--bg2)', border: '0.5px solid var(--border)', borderRadius: 16, overflow: 'hidden' }}>
           <div style={{ padding: '10px 16px', fontSize: 11, fontWeight: 700, color: 'var(--w40)', textTransform: 'uppercase', letterSpacing: 1, borderBottom: '0.5px solid var(--border)' }}>Sécurité</div>
-          {[
-            { label: 'Changer le mot de passe', sub: undefined, icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><circle cx="12" cy="16" r="1" fill="rgba(255,255,255,0.5)" stroke="none"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> },
-            { label: 'Authentification 2FA', sub: 'Activée', icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> },
-            { label: 'Notifications push', sub: 'Activées', icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg> },
-          ].map((item, i) => (
-            <button key={item.label} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '13px 16px', borderBottom: i < 2 ? '0.5px solid var(--border)' : 'none', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit' }}>
-              <div style={{ width: 32, height: 32, borderRadius: 9, background: 'var(--bg3)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                {item.icon}
-              </div>
-              <div style={{ flex: 1 }}>
-                <p style={{ fontSize: 14, fontWeight: 600, color: '#fff' }}>{item.label}</p>
-                {item.sub && <p style={{ fontSize: 11, color: 'var(--teal)', marginTop: 1 }}>{item.sub}</p>}
-              </div>
-              <ChevronRight />
-            </button>
-          ))}
+
+          {/* Changer mot de passe */}
+          <button
+            onClick={() => { if (!getIsDemoMode()) setShowPwModal(true) }}
+            style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '13px 16px', borderBottom: '0.5px solid var(--border)', background: 'transparent', border: 'none', cursor: getIsDemoMode() ? 'not-allowed' : 'pointer', textAlign: 'left', fontFamily: 'inherit', opacity: getIsDemoMode() ? 0.5 : 1 }}>
+            <div style={{ width: 32, height: 32, borderRadius: 9, background: 'var(--bg3)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><circle cx="12" cy="16" r="1" fill="rgba(255,255,255,0.5)" stroke="none"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <div style={{ flex: 1 }}>
+              <p style={{ fontSize: 14, fontWeight: 600, color: '#fff' }}>Changer le mot de passe</p>
+              {getIsDemoMode() && <p style={{ fontSize: 11, color: 'var(--w40)', marginTop: 1 }}>Non disponible en démo</p>}
+            </div>
+            <ChevronRight />
+          </button>
+
+          {/* 2FA - coming soon */}
+          <button style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '13px 16px', borderBottom: '0.5px solid var(--border)', background: 'transparent', border: 'none', cursor: 'default', textAlign: 'left', fontFamily: 'inherit', opacity: 0.5 }}>
+            <div style={{ width: 32, height: 32, borderRadius: 9, background: 'var(--bg3)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div style={{ flex: 1 }}>
+              <p style={{ fontSize: 14, fontWeight: 600, color: '#fff' }}>Authentification 2FA</p>
+              <p style={{ fontSize: 11, color: 'var(--orange)', marginTop: 1 }}>Bientôt disponible</p>
+            </div>
+          </button>
+
+          {/* Notifications */}
+          <button style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '13px 16px', background: 'transparent', border: 'none', cursor: 'default', textAlign: 'left', fontFamily: 'inherit', opacity: 0.5 }}>
+            <div style={{ width: 32, height: 32, borderRadius: 9, background: 'var(--bg3)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            </div>
+            <div style={{ flex: 1 }}>
+              <p style={{ fontSize: 14, fontWeight: 600, color: '#fff' }}>Notifications push</p>
+              <p style={{ fontSize: 11, color: 'var(--orange)', marginTop: 1 }}>Bientôt disponible</p>
+            </div>
+          </button>
         </div>
 
         {/* ── LÉGAL ── */}
         <div style={{ background: 'var(--bg2)', border: '0.5px solid var(--border)', borderRadius: 16, overflow: 'hidden' }}>
           <div style={{ padding: '10px 16px', fontSize: 11, fontWeight: 700, color: 'var(--w40)', textTransform: 'uppercase', letterSpacing: 1, borderBottom: '0.5px solid var(--border)' }}>Légal</div>
-          {["Conditions d'utilisation", 'Politique de confidentialité', 'Conformité AML/KYC'].map((item, i) => (
-            <button key={item} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '13px 16px', borderBottom: i < 2 ? '0.5px solid var(--border)' : 'none', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit' }}>
-              <div style={{ flex: 1, fontSize: 14, fontWeight: 500, color: 'var(--w60)' }}>{item}</div>
-              <ChevronRight />
-            </button>
+          {[
+            { label: "Conditions d'utilisation", href: '/cgu' },
+            { label: 'Politique de confidentialité', href: '/confidentialite' },
+            { label: 'Conformité AML/KYC', href: '/confidentialite#kyc', soon: true },
+          ].map((item, i) => (
+            <Link key={item.label} href={item.href} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '13px 16px', borderBottom: i < 2 ? '0.5px solid var(--border)' : 'none', textDecoration: 'none' }}>
+              <div style={{ flex: 1, fontSize: 14, fontWeight: 500, color: 'var(--w60)' }}>{item.label}</div>
+              {item.soon
+                ? <span style={{ fontSize: 10, color: 'var(--orange)', fontWeight: 700 }}>Bientôt</span>
+                : <ChevronRight />}
+            </Link>
           ))}
         </div>
 

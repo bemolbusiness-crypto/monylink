@@ -397,9 +397,9 @@ export default function LandingPage() {
         <span className="wordmark" style={{ fontSize: 15 }}><span className="mony">Mony</span><span className="link">Link</span></span>
         <span>© 2025 MonyLink SAS · Paris, France</span>
         <div style={{ display: 'flex', gap: 20 }}>
-          {['CGU', 'Confidentialité', 'Contact'].map(l => (
-            <a key={l} href="#" style={{ color: 'var(--w40)', textDecoration: 'none' }}>{l}</a>
-          ))}
+          <Link href="/cgu" style={{ color: 'var(--w40)', textDecoration: 'none' }}>CGU</Link>
+          <Link href="/confidentialite" style={{ color: 'var(--w40)', textDecoration: 'none' }}>Confidentialité</Link>
+          <a href="mailto:contact@monylink.com" style={{ color: 'var(--w40)', textDecoration: 'none' }}>Contact</a>
         </div>
       </footer>
 
