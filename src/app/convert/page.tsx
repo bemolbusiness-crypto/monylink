@@ -128,15 +128,15 @@ export default function ConvertPage() {
               {/* FROM */}
               <div style={{ background: 'var(--bg3)', border: '0.5px solid var(--border)', borderRadius: 14, padding: '14px 16px', marginBottom: 8 }}>
                 <div style={{ fontSize: 11, color: 'var(--w40)', marginBottom: 6 }}>Tu donnes</div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, overflow: 'hidden' }}>
                   <input
                     type="number"
-                    style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', fontSize: 32, fontWeight: 800, color: '#fff', fontFamily: 'inherit' }}
+                    style={{ flex: 1, minWidth: 0, background: 'transparent', border: 'none', outline: 'none', fontSize: 32, fontWeight: 800, color: '#fff', fontFamily: 'inherit' }}
                     placeholder="0"
                     value={amount}
                     onChange={e => setAmount(e.target.value)}
                   />
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(139,92,246,.15)', border: '0.5px solid rgba(139,92,246,.3)', borderRadius: 10, padding: '6px 12px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(139,92,246,.15)', border: '0.5px solid rgba(139,92,246,.3)', borderRadius: 10, padding: '6px 12px', flexShrink: 0 }}>
                     <span style={{ fontSize: 16 }}>💶</span>
                     <span style={{ fontSize: 14, fontWeight: 800, color: 'var(--purple)' }}>EUR</span>
                   </div>
@@ -156,9 +156,9 @@ export default function ConvertPage() {
               {/* TO */}
               <div style={{ background: 'rgba(34,211,176,.06)', border: `0.5px solid ${amountNum > 0 ? 'rgba(34,211,176,.3)' : 'var(--border)'}`, borderRadius: 14, padding: '14px 16px', marginBottom: 16 }}>
                 <div style={{ fontSize: 11, color: 'var(--w40)', marginBottom: 6 }}>Tu reçois</div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <div style={{ flex: 1, fontSize: 32, fontWeight: 800, color: amountNum > 0 ? 'var(--teal)' : 'var(--w40)' }}>{usdcOut}</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(34,211,176,.15)', border: '0.5px solid rgba(34,211,176,.3)', borderRadius: 10, padding: '6px 12px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, overflow: 'hidden' }}>
+                  <div style={{ flex: 1, minWidth: 0, fontSize: 32, fontWeight: 800, color: amountNum > 0 ? 'var(--teal)' : 'var(--w40)' }}>{usdcOut}</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(34,211,176,.15)', border: '0.5px solid rgba(34,211,176,.3)', borderRadius: 10, padding: '6px 12px', flexShrink: 0 }}>
                     <span style={{ fontSize: 16 }}>🔵</span>
                     <span style={{ fontSize: 14, fontWeight: 800, color: 'var(--teal)' }}>USDC</span>
                   </div>
