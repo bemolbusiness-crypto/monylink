@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabase/client'
 
 export default function LoginPage() {
   const router = useRouter()
-  const [mode, setMode] = useState<'phone' | 'email'>('phone')
+  const [mode, setMode] = useState<'phone' | 'email'>('email')
   const [identifier, setIdentifier] = useState('')
   const [password, setPassword] = useState('')
   const [otpCode, setOtpCode] = useState('')
@@ -156,7 +156,7 @@ export default function LoginPage() {
 
           {/* Mode tabs */}
           <div style={{ display: 'flex', background: 'var(--bg3)', border: '0.5px solid var(--border)', borderRadius: 14, padding: 4, marginBottom: 24, gap: 4 }}>
-            {(['phone', 'email'] as const).map(m => (
+            {(['email', 'phone'] as const).map(m => (
               <button key={m} type="button"
                 onClick={() => { setMode(m); setIdentifier(''); setShowOtp(false); setError('') }}
                 style={{

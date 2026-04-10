@@ -27,22 +27,13 @@ export default function SignupPage() {
     setLoading(true); setError('')
     const supabase = createClient()
     try {
-      if (region === 'africa') {
-        const { error: err } = await supabase.auth.signInWithOtp({
-          phone: phone.replace(/\s/g, ''),
-          options: { data: { full_name: fullName, country, region: 'africa' } },
-        })
-        if (err) throw err
-        setStep('otp')
-      } else {
-        if (!email || !password) { setError('Email et mot de passe requis'); setLoading(false); return }
-        const { error: err } = await supabase.auth.signUp({
-          email, password,
-          options: { data: { full_name: fullName, country, region: 'europe' }, emailRedirectTo: undefined },
-        })
-        if (err) throw err
-        setStep('otp')
-      }
+      if (!email || !password) { setError('Email et mot de passe requis'); setLoading(false); return }
+      const { error: err } = await supabase.auth.signUp({
+        email, password,
+        options: { data: { full_name: fullName, country, region: region ?? 'europe' }, emailRedirectTo: undefined },
+      })
+      if (err) throw err
+      setStep('otp')
     } catch (e: unknown) {
       console.error('Signup error:', e)
       setError(e instanceof Error ? e.message : JSON.stringify(e))
@@ -53,13 +44,8 @@ export default function SignupPage() {
     setLoading(true); setError('')
     const supabase = createClient()
     try {
-      if (region === 'africa') {
-        const { error: err } = await supabase.auth.verifyOtp({ phone: phone.replace(/\s/g, ''), token: otpCode, type: 'sms' })
-        if (err) throw err
-      } else {
-        const { error: err } = await supabase.auth.verifyOtp({ email, token: otpCode, type: 'signup' })
-        if (err) throw err
-      }
+      const { error: err } = await supabase.auth.verifyOtp({ email, token: otpCode, type: 'signup' })
+      if (err) throw err
       setStep('done')
       setTimeout(() => router.push('/dashboard'), 1200)
     } catch (e: unknown) {
@@ -198,31 +184,18 @@ export default function SignupPage() {
               <input className="ml-input" placeholder="Jean Dupont" value={fullName} onChange={e => setFullName(e.target.value)} />
             </div>
 
-            {region === 'africa' && (
-              <div>
-                <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: 'var(--w40)', marginBottom: 7, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                  Numéro de téléphone
-                </label>
-                <input className="ml-input" type="tel" value={phone} onChange={e => setPhone(e.target.value)} />
-              </div>
-            )}
-
-            {region === 'europe' && (
-              <>
-                <div>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: 'var(--w40)', marginBottom: 7, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                    Email
-                  </label>
-                  <input className="ml-input" type="email" placeholder="ton@email.com" value={email} onChange={e => setEmail(e.target.value)} />
-                </div>
-                <div>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: 'var(--w40)', marginBottom: 7, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                    Mot de passe
-                  </label>
-                  <input className="ml-input" type="password" placeholder="8 caractères minimum" value={password} onChange={e => setPassword(e.target.value)} />
-                </div>
-              </>
-            )}
+            <div>
+              <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: 'var(--w40)', marginBottom: 7, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                Email
+              </label>
+              <input className="ml-input" type="email" placeholder="ton@email.com" value={email} onChange={e => setEmail(e.target.value)} />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: 'var(--w40)', marginBottom: 7, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                Mot de passe
+              </label>
+              <input className="ml-input" type="password" placeholder="8 caractères minimum" value={password} onChange={e => setPassword(e.target.value)} />
+            </div>
 
             {error && <div className="error-box">{error}</div>}
 
@@ -237,9 +210,7 @@ export default function SignupPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <h2 style={{ fontSize: 22, fontWeight: 800, letterSpacing: -0.3 }}>Code de vérification</h2>
             <p style={{ fontSize: 14, color: 'var(--w60)', lineHeight: 1.65 }}>
-              {region === 'africa'
-                ? <>Code SMS envoyé au <strong style={{ color: '#fff' }}>{phone}</strong></>
-                : <>Email envoyé à <strong style={{ color: '#fff' }}>{email}</strong></>}
+              Email envoyé à <strong style={{ color: '#fff' }}>{email}</strong>
             </p>
             <input className="ml-input" type="text" inputMode="text"
               placeholder="Code reçu"
