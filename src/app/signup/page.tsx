@@ -40,7 +40,10 @@ export default function SignupPage() {
         const { error: err } = await supabase.auth.signUp({
           email,
           password,
-          options: { data: { full_name: fullName, country, region: 'europe' } },
+          options: {
+            data: { full_name: fullName, country, region: 'europe' },
+            emailRedirectTo: undefined,
+          },
         })
         if (err) throw err
         setStep('otp')
@@ -178,11 +181,11 @@ export default function SignupPage() {
             <p style={{ fontSize: 14, color: 'var(--w60)', lineHeight: 1.6 }}>
               {region === 'africa' ? `SMS envoyé au ${phone}` : `Email envoyé à ${email}`}
             </p>
-            <input className="ml-input" type="text" inputMode="numeric" placeholder="123456" maxLength={6}
-              value={otpCode} onChange={e => setOtpCode(e.target.value.replace(/\D/g, ''))}
-              style={{ fontSize: 28, fontWeight: 800, letterSpacing: 8, textAlign: 'center' }} />
+            <input className="ml-input" type="text" inputMode="text" placeholder="Code reçu par email"
+              value={otpCode} onChange={e => setOtpCode(e.target.value.trim())}
+              style={{ fontSize: 18, fontWeight: 800, letterSpacing: 4, textAlign: 'center' }} />
             {error && <div style={{ background: 'rgba(239,68,68,.1)', border: '0.5px solid rgba(239,68,68,.3)', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: '#ef4444' }}>{error}</div>}
-            <button className="btn-primary" disabled={loading || otpCode.length < 6} onClick={handleOtp}>
+            <button className="btn-primary" disabled={loading || otpCode.length < 4} onClick={handleOtp}>
               {loading ? 'Vérification...' : 'Vérifier →'}
             </button>
             <button onClick={() => setStep('info')} style={{ background: 'none', border: 'none', color: 'var(--w40)', fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}>← Modifier</button>
