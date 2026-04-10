@@ -185,9 +185,14 @@ export default function LoginPage() {
               </div>
               {mode === 'email' && (
                 <div>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: 'var(--w40)', marginBottom: 7, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                    Mot de passe
-                  </label>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 7 }}>
+                    <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--w40)', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                      Mot de passe
+                    </label>
+                    <Link href="/forgot-password" style={{ fontSize: 12, color: 'var(--orange)', textDecoration: 'none', fontWeight: 600 }}>
+                      Oublié ?
+                    </Link>
+                  </div>
                   <input type="password" className="ml-input" placeholder="••••••••"
                     value={password} onChange={e => setPassword(e.target.value)} required />
                 </div>
