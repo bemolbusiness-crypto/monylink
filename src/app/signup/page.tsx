@@ -46,7 +46,9 @@ export default function SignupPage() {
         setStep('otp')
       }
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Erreur inscription')
+      console.error('Signup error:', e)
+      const msg = e instanceof Error ? e.message : JSON.stringify(e)
+      setError(msg)
     } finally {
       setLoading(false)
     }
