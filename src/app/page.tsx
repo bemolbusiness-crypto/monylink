@@ -111,10 +111,29 @@ export default function LandingPage() {
   return (
     <div ref={pageRef} style={{ background: 'var(--bg)', color: '#fff', fontFamily: 'inherit' }}>
 
+      <style>{`
+        @media (max-width: 768px) {
+          .lp-nav-links { display: none !important; }
+          .lp-nav-cta span { display: none; }
+          .lp-hero { grid-template-columns: 1fr !important; padding: 32px 20px 40px !important; gap: 32px !important; }
+          .lp-mockup { display: none !important; }
+          .lp-features { grid-template-columns: 1fr !important; padding: 48px 20px !important; }
+          .lp-features-grid { grid-template-columns: 1fr !important; }
+          .lp-how { padding: 0 20px 48px !important; }
+          .lp-how-grid { grid-template-columns: 1fr 1fr !important; }
+          .lp-personas { padding: 0 20px 48px !important; }
+          .lp-personas-grid { grid-template-columns: 1fr !important; }
+          .lp-demo { padding: 40px 20px !important; }
+          .lp-cta { padding: 60px 20px !important; }
+          .lp-footer { padding: 20px !important; flex-direction: column !important; text-align: center !important; }
+          .lp-stats { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
+
       {/* ── NAV ── */}
       <nav style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '16px 40px', borderBottom: '0.5px solid var(--border)',
+        padding: '16px 20px', borderBottom: '0.5px solid var(--border)',
         position: 'sticky', top: 0, background: 'var(--bg)', zIndex: 100,
       }}>
         <a href="#" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
@@ -126,24 +145,24 @@ export default function LandingPage() {
           </div>
           <span className="wordmark"><span className="mony">Mony</span><span className="link">Link</span></span>
         </a>
-        <ul style={{ display: 'flex', gap: 28, listStyle: 'none' }}>
-          <li><a href="#features" style={{ color: 'var(--w60)', textDecoration: 'none', fontSize: 14, fontWeight: 500, transition: 'color 0.2s' }}>Fonctionnalités</a></li>
+        <ul className="lp-nav-links" style={{ display: 'flex', gap: 28, listStyle: 'none', margin: 0, padding: 0 }}>
+          <li><a href="#features" style={{ color: 'var(--w60)', textDecoration: 'none', fontSize: 14, fontWeight: 500 }}>Fonctionnalités</a></li>
           <li><a href="#how" style={{ color: 'var(--w60)', textDecoration: 'none', fontSize: 14, fontWeight: 500 }}>Comment ça marche</a></li>
           <li><a href="#personas" style={{ color: 'var(--w60)', textDecoration: 'none', fontSize: 14, fontWeight: 500 }}>Pour qui</a></li>
         </ul>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Link href="/login" style={{ color: 'var(--w60)', textDecoration: 'none', fontSize: 14, fontWeight: 500, padding: '8px 16px' }}>Connexion</Link>
+        <div className="lp-nav-cta" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Link href="/login" style={{ color: 'var(--w60)', textDecoration: 'none', fontSize: 14, fontWeight: 500, padding: '8px 12px' }}>Connexion</Link>
           <Link href="/signup" style={{
-            background: 'var(--orange)', color: '#fff', borderRadius: 10, padding: '10px 22px',
-            fontSize: 14, fontWeight: 700, textDecoration: 'none', transition: 'background 0.2s',
+            background: 'var(--orange)', color: '#fff', borderRadius: 10, padding: '10px 18px',
+            fontSize: 14, fontWeight: 700, textDecoration: 'none',
           }}>
-            Rejoindre la liste
+            S&apos;inscrire
           </Link>
         </div>
       </nav>
 
       {/* ── HERO ── */}
-      <section style={{
+      <section className="lp-hero" style={{
         display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 56,
         alignItems: 'start', padding: '72px 40px 64px',
         maxWidth: 1160, margin: '0 auto',
@@ -206,7 +225,7 @@ export default function LandingPage() {
         </div>
 
         {/* ── MOCKUP ── */}
-        <div style={{
+        <div className="lp-mockup" style={{
           background: 'var(--bg2)', border: '0.5px solid var(--border-p)',
           borderRadius: 22, padding: 22, position: 'relative', overflow: 'hidden',
         }}>
@@ -258,7 +277,7 @@ export default function LandingPage() {
       </div>
 
       {/* ── STATS ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 1, background: 'var(--border)' }}>
+      <div className="lp-stats" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 1, background: 'var(--border)' }}>
         {[
           { num: '2×',   lbl: 'Moins cher que Western Union' },
           { num: '+15',  lbl: 'Pays africains couverts' },
@@ -272,11 +291,11 @@ export default function LandingPage() {
       </div>
 
       {/* ── FEATURES ── */}
-      <section id="features" style={{ padding: '80px 40px', maxWidth: 1160, margin: '0 auto' }}>
+      <section id="features" className="lp-features" style={{ padding: '80px 40px', maxWidth: 1160, margin: '0 auto' }}>
         <div className="eyebrow">Pourquoi MonyLink</div>
         <h2 style={{ fontSize: 34, fontWeight: 800, letterSpacing: '-1.2px', marginBottom: 10, lineHeight: 1.2 }}>Tout en un seul wallet</h2>
         <p style={{ fontSize: 16, color: 'var(--w60)', marginBottom: 40 }}>Multi-devises, bidirectionnel, carte virtuelle incluse.</p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 14 }}>
+        <div className="lp-features-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 14 }}>
           {[
             { icon: '⚡', h: 'Transferts instantanés', p: "L'argent arrive en moins de 30 secondes sur le Mobile Money ou l'IBAN du destinataire." },
             { icon: '🔒', h: 'Sécurité renforcée',    p: 'KYC biométrique, chiffrement bout-en-bout, conformité ACPR Europe.' },
@@ -295,11 +314,11 @@ export default function LandingPage() {
       </section>
 
       {/* ── HOW IT WORKS ── */}
-      <section id="how" style={{ padding: '0 40px 80px', maxWidth: 1160, margin: '0 auto' }}>
+      <section id="how" className="lp-how" style={{ padding: '0 40px 80px', maxWidth: 1160, margin: '0 auto' }}>
         <div className="eyebrow">Comment ça marche</div>
         <h2 style={{ fontSize: 34, fontWeight: 800, letterSpacing: '-1.2px', marginBottom: 10, lineHeight: 1.2 }}>4 étapes, c&apos;est tout</h2>
         <p style={{ fontSize: 16, color: 'var(--w60)', marginBottom: 0 }}>De l&apos;inscription au premier transfert en moins de 5 minutes.</p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginTop: 40 }}>
+        <div className="lp-how-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginTop: 40 }}>
           {[
             { n: 1, h: 'Créez votre compte',       p: 'Inscription en 2 min. Vérification KYC rapide via votre téléphone.' },
             { n: 2, h: 'Alimentez votre wallet',   p: 'Virement IBAN, carte bancaire ou Mobile Money. Fonds disponibles instantanément.' },
@@ -316,11 +335,11 @@ export default function LandingPage() {
       </section>
 
       {/* ── PERSONAS ── */}
-      <section id="personas" style={{ padding: '0 40px 80px', maxWidth: 1160, margin: '0 auto' }}>
+      <section id="personas" className="lp-personas" style={{ padding: '0 40px 80px', maxWidth: 1160, margin: '0 auto' }}>
         <div className="eyebrow">Ils utilisent MonyLink</div>
         <h2 style={{ fontSize: 34, fontWeight: 800, letterSpacing: '-1.2px', marginBottom: 10, lineHeight: 1.2 }}>Fait pour vous</h2>
         <p style={{ fontSize: 16, color: 'var(--w60)', marginBottom: 28 }}>Diaspora, freelances, familles, étudiants.</p>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+        <div className="lp-personas-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
           {[
             { initials: 'KA', color: 'rgba(139,92,246,0.15)', textColor: '#8B5CF6', name: 'Kevin, 27 ans · Douala', role: 'Graphiste freelance · reçoit des paiements d\'Europe', quote: '"PayPal bloque mon argent 21 jours. J\'ai besoin d\'un wallet pour recevoir mes euros de clients européens et retirer en FCFA sans perdre 8 %."' },
             { initials: 'JT', color: 'rgba(249,115,22,0.15)',  textColor: '#F97316', name: 'Jeanne, 52 ans · Yaoundé', role: 'Fonctionnaire · envoie à son fils en France', quote: '"Je veux envoyer 150 € à mon fils chaque mois depuis Orange Money, sans payer 12 % de frais et sans me déplacer jusqu\'à une agence."' },
@@ -340,7 +359,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── DEMO SECTION ── */}
-      <section style={{ padding: '64px 40px', maxWidth: 1160, margin: '0 auto', textAlign: 'center' }}>
+      <section className="lp-demo" style={{ padding: '64px 40px', maxWidth: 1160, margin: '0 auto', textAlign: 'center' }}>
         <div style={{ background: 'linear-gradient(135deg,rgba(139,92,246,0.12),rgba(249,115,22,0.08))', border: '1px solid rgba(139,92,246,0.3)', borderRadius: 24, padding: '48px 32px', position: 'relative', overflow: 'hidden' }}>
           <div style={{ position: 'absolute', top: -60, right: -60, width: 220, height: 220, background: 'radial-gradient(circle,rgba(249,115,22,0.1) 0%,transparent 70%)', pointerEvents: 'none' }} />
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(249,115,22,0.12)', border: '0.5px solid rgba(249,115,22,0.3)', color: 'var(--orange)', fontSize: 12, fontWeight: 700, padding: '5px 14px', borderRadius: 100, marginBottom: 18, letterSpacing: '0.5px' }}>▶ VERSION D&apos;ESSAI DISPONIBLE</div>
@@ -361,7 +380,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── CTA SECTION ── */}
-      <section style={{ background: 'linear-gradient(135deg, #1e0f3a 0%, #0f0a1e 100%)', borderTop: '0.5px solid rgba(139,92,246,0.3)', padding: '88px 40px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+      <section className="lp-cta" style={{ background: 'linear-gradient(135deg, #1e0f3a 0%, #0f0a1e 100%)', borderTop: '0.5px solid rgba(139,92,246,0.3)', padding: '88px 40px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 600, height: 400, background: 'radial-gradient(ellipse, rgba(249,115,22,0.08) 0%, transparent 70%)', pointerEvents: 'none' }} />
         <h2 style={{ fontSize: 38, fontWeight: 800, letterSpacing: '-1.5px', marginBottom: 14, position: 'relative' }}>Prêt à recevoir vos euros ?</h2>
         <p style={{ fontSize: 17, color: 'var(--w60)', marginBottom: 34, maxWidth: 520, marginLeft: 'auto', marginRight: 'auto', position: 'relative' }}>
@@ -374,7 +393,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── FOOTER ── */}
-      <footer style={{ padding: '24px 40px', borderTop: '0.5px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 13, color: 'var(--w40)', flexWrap: 'wrap', gap: 10 }}>
+      <footer className="lp-footer" style={{ padding: '24px 40px', borderTop: '0.5px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 13, color: 'var(--w40)', flexWrap: 'wrap', gap: 10 }}>
         <span className="wordmark" style={{ fontSize: 15 }}><span className="mony">Mony</span><span className="link">Link</span></span>
         <span>© 2025 MonyLink SAS · Paris, France</span>
         <div style={{ display: 'flex', gap: 20 }}>
