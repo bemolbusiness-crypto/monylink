@@ -137,10 +137,10 @@ export default function LandingPage() {
         position: 'sticky', top: 0, background: 'var(--bg)', zIndex: 100,
       }}>
         <a href="#" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
-          <div style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--bg2)', border: '0.5px solid var(--border-p)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path d="M3 8Q3 3 8 3Q10 3 10 6.5Q10 3 12.5 3Q17 3 17 8Q17 13 10 17Q3 13 3 8Z" fill="none" stroke="#F97316" strokeWidth="1.7" strokeLinejoin="round"/>
-              <path d="M7.5 9L10 11.5L12.5 7" stroke="#F97316" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+          <div style={{ width: 36, height: 36, borderRadius: 11, background: 'linear-gradient(135deg, #F97316 0%, #8B5CF6 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 14px rgba(249,115,22,0.3)' }}>
+            <svg width="22" height="22" viewBox="0 0 20 20" fill="none">
+              <circle cx="7" cy="10" r="3.6" stroke="white" strokeWidth="1.7" fill="none"/>
+              <circle cx="13" cy="10" r="3.6" stroke="white" strokeWidth="1.7" fill="none"/>
             </svg>
           </div>
           <span className="wordmark"><span className="mony">Mony</span><span className="link">Link</span></span>

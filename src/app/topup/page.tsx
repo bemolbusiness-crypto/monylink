@@ -96,27 +96,27 @@ export default function TopupPage() {
   const stepIdx = ['amount','method','reference'].indexOf(step)
 
   return (
-    <div style={{ maxWidth: 430, margin: '0 auto', minHeight: '100dvh', background: 'var(--bg)', paddingBottom: 80 }}>
+    <div className="page-wrap">
 
       {/* Header */}
-      <div style={{ background: 'linear-gradient(160deg,var(--bg) 0%,#1a0d35 60%,var(--bg2) 100%)', padding: '48px 20px 24px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
-          <button onClick={() => step === 'amount' ? router.back() : setStep(step === 'method' ? 'amount' : 'method')}
-            style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--w10)', border: '0.5px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#fff', fontSize: 16, flexShrink: 0 }}>←</button>
-          <div>
-            <h1 style={{ fontSize: 18, fontWeight: 800 }}>Envoyer via Mobile Money</h1>
-            <div style={{ fontSize: 12, color: 'var(--w40)', marginTop: 2 }}>{country.flag} {getCurrencyLabel(currency)} → EUR</div>
+      <div className="page-header" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: 12, padding: '14px 20px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, width: '100%' }}>
+          <button onClick={() => step === 'amount' ? router.back() : setStep(step === 'method' ? 'amount' : 'method')} className="page-header-back" aria-label="Retour">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+          </button>
+          <div style={{ flex: 1 }}>
+            <div className="page-title">Envoyer via Mobile Money</div>
+            <div style={{ fontSize: 11, color: 'var(--w40)', marginTop: 1 }}>{country.flag} {getCurrencyLabel(currency)} → EUR</div>
           </div>
         </div>
-        {/* Progress */}
-        <div style={{ display: 'flex', gap: 6 }}>
+        <div style={{ display: 'flex', gap: 5, width: '100%' }}>
           {['amount','method','reference'].map((_,i) => (
-            <div key={i} style={{ height: 3, flex: 1, borderRadius: 4, background: stepIdx >= i ? 'var(--orange)' : 'var(--w10)', transition: 'background .3s' }} />
+            <div key={i} style={{ height: 3, flex: 1, borderRadius: 4, background: stepIdx >= i ? 'var(--orange)' : 'var(--bg4)', transition: 'background .3s' }} />
           ))}
         </div>
       </div>
 
-      <div style={{ padding: '20px 16px' }}>
+      <div className="page-content" style={{ paddingBottom: 100 }}>
 
         {/* STEP 1 — Montant */}
         {step === 'amount' && (
