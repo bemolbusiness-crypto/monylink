@@ -40,9 +40,11 @@ export default function DemoPage() {
   const router = useRouter()
   const containerRef = useRef<HTMLDivElement>(null)
   const widgetId = useRef<string | null>(null)
+  const pendingToken = useRef<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [region, setRegion] = useState<'africa' | 'europe'>('europe')
+  const [verified, setVerified] = useState(false)
 
   useEffect(() => {
     // Si déjà en mode démo → rediriger directement
@@ -80,28 +82,38 @@ export default function DemoPage() {
     })
   }
 
-  async function handleToken(token: string) {
+  function handleToken(token: string) {
+    // Stocker le token mais ne pas rediriger automatiquement
+    pendingToken.current = token
+    setVerified(true)
+  }
+
+  async function handleEnter() {
+    if (!pendingToken.current) return
     setLoading(true)
     setError('')
     try {
       const res = await fetch('/api/demo/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token }),
+        body: JSON.stringify({ token: pendingToken.current }),
       })
       if (!res.ok) {
         const data = await res.json()
         setError(data.error || 'Vérification échouée')
         if (widgetId.current) window.turnstile?.reset(widgetId.current)
+        setVerified(false)
+        pendingToken.current = null
         setLoading(false)
         return
       }
-      // Cookie posé → stocker la région choisie dans sessionStorage pour getDemoProfile
       sessionStorage.setItem('ml-demo-region', region)
       router.replace('/dashboard')
     } catch {
       setError('Erreur réseau. Réessaie.')
       if (widgetId.current) window.turnstile?.reset(widgetId.current)
+      setVerified(false)
+      pendingToken.current = null
       setLoading(false)
     }
   }
@@ -175,6 +187,12 @@ export default function DemoPage() {
 
         {/* Conteneur Turnstile */}
         <div ref={containerRef} style={{ minHeight: 65, display: 'flex', alignItems: 'center', justifyContent: 'center' }} />
+
+        {verified && !loading && (
+          <button onClick={handleEnter} className="btn-primary" style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+            Entrer dans la démo {region === 'africa' ? '🌍' : '🇫🇷'} →
+          </button>
+        )}
 
         {loading && (
           <div style={{ fontSize: 13, color: 'var(--w60)', display: 'flex', alignItems: 'center', gap: 8 }}>
