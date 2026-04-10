@@ -3,14 +3,13 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useSignUp } from '@clerk/nextjs/legacy'
+import { createClient } from '@/lib/supabase/client'
 import { AFRICAN_COUNTRIES, EUROPEAN_COUNTRIES } from '@/types'
 
 type Step = 'region' | 'country' | 'info' | 'otp' | 'done'
 
 export default function SignupPage() {
   const router = useRouter()
-  const { signUp, setActive, isLoaded } = useSignUp()
 
   const [step, setStep] = useState<Step>('region')
   const [region, setRegion] = useState<'africa' | 'europe' | null>(null)
@@ -26,26 +25,24 @@ export default function SignupPage() {
   const countries = region === 'africa' ? AFRICAN_COUNTRIES : EUROPEAN_COUNTRIES
 
   async function handleSubmit() {
-    if (!isLoaded || !signUp) return
     setLoading(true); setError('')
+    const supabase = createClient()
     try {
       if (region === 'africa') {
-        await signUp.create({
-          phoneNumber: phone.replace(/\s/g, ''),
-          unsafeMetadata: { country, region: 'africa', full_name: fullName },
+        const { error: err } = await supabase.auth.signInWithOtp({
+          phone: phone.replace(/\s/g, ''),
+          options: { data: { full_name: fullName, country, region: 'africa' } },
         })
-        await signUp.preparePhoneNumberVerification({ strategy: 'phone_code' })
+        if (err) throw err
         setStep('otp')
       } else {
         if (!email || !password) { setError('Email et mot de passe requis'); setLoading(false); return }
-        await signUp.create({
-          emailAddress: email,
+        const { error: err } = await supabase.auth.signUp({
+          email,
           password,
-          firstName: fullName.split(' ')[0],
-          lastName: fullName.split(' ').slice(1).join(' ') || '',
-          unsafeMetadata: { country, region: 'europe', full_name: fullName },
+          options: { data: { full_name: fullName, country, region: 'europe' } },
         })
-        await signUp.prepareEmailAddressVerification({ strategy: 'email_code' })
+        if (err) throw err
         setStep('otp')
       }
     } catch (e: unknown) {
@@ -56,22 +53,26 @@ export default function SignupPage() {
   }
 
   async function handleOtp() {
-    if (!isLoaded || !signUp || !setActive) return
     setLoading(true); setError('')
+    const supabase = createClient()
     try {
-      let result
       if (region === 'africa') {
-        result = await signUp.attemptPhoneNumberVerification({ code: otpCode })
+        const { error: err } = await supabase.auth.verifyOtp({
+          phone: phone.replace(/\s/g, ''),
+          token: otpCode,
+          type: 'sms',
+        })
+        if (err) throw err
       } else {
-        result = await signUp.attemptEmailAddressVerification({ code: otpCode })
+        const { error: err } = await supabase.auth.verifyOtp({
+          email,
+          token: otpCode,
+          type: 'signup',
+        })
+        if (err) throw err
       }
-      if (result.status === 'complete' && result.createdSessionId) {
-        await setActive({ session: result.createdSessionId })
-        setStep('done')
-        setTimeout(() => router.push('/dashboard'), 1200)
-      } else {
-        setError('Vérification incomplète')
-      }
+      setStep('done')
+      setTimeout(() => router.push('/dashboard'), 1200)
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Code invalide')
     } finally {

@@ -3,11 +3,10 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useSignIn } from '@clerk/nextjs/legacy'
+import { createClient } from '@/lib/supabase/client'
 
 export default function LoginPage() {
   const router = useRouter()
-  const { signIn, setActive, isLoaded } = useSignIn()
 
   const [mode, setMode] = useState<'phone' | 'email'>('phone')
   const [identifier, setIdentifier] = useState('')
@@ -19,21 +18,22 @@ export default function LoginPage() {
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
-    if (!isLoaded || !signIn) return
     setLoading(true); setError('')
+    const supabase = createClient()
     try {
       if (mode === 'phone') {
-        await signIn.create({
-          identifier: identifier.replace(/\s/g, ''),
-          strategy: 'phone_code',
+        const { error: err } = await supabase.auth.signInWithOtp({
+          phone: identifier.replace(/\s/g, ''),
         })
+        if (err) throw err
         setShowOtp(true)
       } else {
-        const result = await signIn.create({ identifier, password })
-        if (result.status === 'complete' && setActive) {
-          await setActive({ session: result.createdSessionId })
-          router.push('/dashboard')
-        }
+        const { error: err } = await supabase.auth.signInWithPassword({
+          email: identifier,
+          password,
+        })
+        if (err) throw err
+        router.push('/dashboard')
       }
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Identifiant ou mot de passe incorrect.')
@@ -44,14 +44,16 @@ export default function LoginPage() {
 
   async function handleOtp(e: React.FormEvent) {
     e.preventDefault()
-    if (!isLoaded || !signIn || !setActive) return
     setLoading(true); setError('')
+    const supabase = createClient()
     try {
-      const result = await signIn.attemptFirstFactor({ strategy: 'phone_code', code: otpCode })
-      if (result.status === 'complete') {
-        await setActive({ session: result.createdSessionId })
-        router.push('/dashboard')
-      }
+      const { error: err } = await supabase.auth.verifyOtp({
+        phone: identifier.replace(/\s/g, ''),
+        token: otpCode,
+        type: 'sms',
+      })
+      if (err) throw err
+      router.push('/dashboard')
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Code invalide.')
     } finally {
@@ -126,7 +128,6 @@ export default function LoginPage() {
           <h1 style={{ fontSize: 28, fontWeight: 800, letterSpacing: -0.5, marginBottom: 6 }}>Bon retour 👋</h1>
           <p style={{ fontSize: 14, color: 'var(--w40)', marginBottom: 24 }}>Connecte-toi à ton compte MonyLink</p>
 
-          {/* Toggle */}
           <div style={{ display: 'flex', background: 'var(--bg2)', border: '0.5px solid var(--border)', borderRadius: 12, padding: 4, marginBottom: 24, gap: 4 }}>
             {(['phone', 'email'] as const).map(m => (
               <button key={m} type="button" onClick={() => { setMode(m); setIdentifier(''); setShowOtp(false); setError('') }}

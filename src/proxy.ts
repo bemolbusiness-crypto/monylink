@@ -1,33 +1,50 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { createServerClient } from '@supabase/ssr'
+import { NextResponse, type NextRequest } from 'next/server'
 
-// Routes accessibles sans auth Clerk (landing, auth, APIs publiques)
-const isPublic = createRouteMatcher([
-  '/',
-  '/demo(.*)',
-  '/login(.*)',
-  '/signup(.*)',
-  '/p/(.*)',
-  '/api/public/(.*)',
-  '/api/demo/(.*)',
-  '/api/webhooks/(.*)',
-  '/api/recipient/(.*)',
-])
+const PUBLIC_PATHS = ['/', '/demo', '/login', '/signup', '/p/']
+const PUBLIC_API   = ['/api/public/', '/api/demo/', '/api/webhooks/', '/api/recipient/']
 
-export default clerkMiddleware(async (auth, request: NextRequest) => {
+function isPublicRoute(pathname: string) {
+  if (PUBLIC_PATHS.some(p => pathname === p || pathname.startsWith(p + '/'))) return true
+  if (PUBLIC_API.some(p => pathname.startsWith(p))) return true
+  return false
+}
+
+export async function proxy(request: NextRequest) {
+  let response = NextResponse.next({ request })
+
+  // Sandbox demo → bypass auth
+  if (request.cookies.get('ml-demo')?.value === '1') return response
+
   // Routes publiques → laisser passer
-  if (isPublic(request)) return
+  if (isPublicRoute(request.nextUrl.pathname)) return response
 
-  // Session sandbox → bypass Clerk pour les routes protégées
-  // Le cookie ml-demo est posé par /api/demo/verify après Turnstile.
-  // Même si quelqu'un le falsifie, les pages utilisent getDemoProfile()
-  // et les API routes ont leur propre requireAuth() — aucun risque sur les vraies données.
-  const demoCookie = request.cookies.get('ml-demo')
-  if (demoCookie?.value === '1') return NextResponse.next()
+  // Vérifier la session Supabase
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() { return request.cookies.getAll() },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
+          response = NextResponse.next({ request })
+          cookiesToSet.forEach(({ name, value, options }) =>
+            response.cookies.set(name, value, options)
+          )
+        },
+      },
+    }
+  )
 
-  // Sinon : protection Clerk standard
-  await auth.protect()
-})
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    return NextResponse.redirect(new URL('/login', request.url))
+  }
+
+  return response
+}
 
 export const config = {
   matcher: [
