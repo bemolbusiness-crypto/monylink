@@ -143,10 +143,8 @@ export default function DashboardPage() {
   const firstName = profile?.full_name?.split(' ')[0] ?? 'Utilisateur'
 
   const quickActionsAfrica = [
-    { href: '/send',    label: 'Envoyer',    Icon: IconArrowRight, color: '#F97316',              bg: 'rgba(249,115,22,0.15)' },
-    { href: '/topup',   label: 'Recharger',  Icon: IconTopup,      color: '#F97316',              bg: 'rgba(249,115,22,0.15)' },
-    { href: '/card',    label: 'Carte',      Icon: IconCard,       color: '#8B5CF6',              bg: 'rgba(139,92,246,0.15)' },
-    { href: '/history', label: 'Activité',   Icon: IconHistory,    color: 'rgba(255,255,255,0.6)', bg: 'rgba(255,255,255,0.07)' },
+    { href: '/send',  label: 'Envoyer',   Icon: IconArrowRight, color: '#F97316', bg: 'rgba(249,115,22,0.15)' },
+    { href: '/topup', label: 'Recharger', Icon: IconTopup,      color: '#F97316', bg: 'rgba(249,115,22,0.15)' },
   ]
   const quickActionsEurope = [
     { href: '/receive',  label: 'Recevoir',  Icon: IconArrowDown,  color: '#22D3B0', bg: 'rgba(34,211,176,0.15)' },

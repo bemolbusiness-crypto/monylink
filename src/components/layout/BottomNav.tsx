@@ -103,11 +103,11 @@ const IconProfile = ({ active }: { active: boolean }) => (
 )
 
 const NAV_AFRICA = [
-  { href: '/dashboard', label: 'Accueil',   Icon: IconHome },
-  { href: '/send',      label: 'Envoyer',   Icon: IconSend },
-  { href: '/topup',     label: 'Recharger', Icon: IconTopup },
-  { href: '/history',   label: 'Activité',  Icon: IconHistory },
-  { href: '/profile',   label: 'Profil',    Icon: IconProfile },
+  { href: '/dashboard', label: 'Accueil',  Icon: IconHome },
+  { href: '/send',      label: 'Envoyer',  Icon: IconSend },
+  { href: '/card',      label: 'Carte',    Icon: IconCard },
+  { href: '/history',   label: 'Activité', Icon: IconHistory },
+  { href: '/profile',   label: 'Profil',   Icon: IconProfile },
 ]
 
 const NAV_EUROPE = [
