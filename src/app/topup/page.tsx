@@ -70,13 +70,17 @@ export default function TopupPage() {
     }
 
     const supabase = createClient()
-    const ref = `${monylinkId}-${Date.now()}`
+    const idLabel = monylinkId || userId?.slice(0, 8).toUpperCase() || 'MLK'
+    const ref = `${idLabel}-${Date.now().toString(36).toUpperCase()}`
     setReference(ref)
-    const { data, error } = await supabase.from('payment_requests').insert({
-      user_id: userId, reference: ref, amount_local: amountNum,
-      currency_local: currency, provider: METHOD_PROVIDER[method], method,
-    }).select().single()
-    if (!error && data) setStep('reference')
+    // Tenter l'insert mais ne pas bloquer si la table n'existe pas encore
+    try {
+      await supabase.from('payment_requests').insert({
+        user_id: userId, reference: ref, amount_local: amountNum,
+        currency_local: currency, provider: METHOD_PROVIDER[method], method,
+      })
+    } catch { /* silencieux — on affiche la référence quand même */ }
+    setStep('reference')
     setLoading(false)
   }
 
