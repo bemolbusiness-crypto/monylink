@@ -43,6 +43,23 @@ const IconHistory = ({ active }: { active: boolean }) => (
   </svg>
 )
 
+const IconTopup = ({ active }: { active: boolean }) => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+    <rect x="2" y="6" width="20" height="14" rx="3"
+      stroke={active ? '#F97316' : 'rgba(255,255,255,0.4)'}
+      strokeWidth="1.8" fill={active ? 'rgba(249,115,22,0.15)' : 'none'} />
+    <path d="M2 11H22"
+      stroke={active ? '#F97316' : 'rgba(255,255,255,0.4)'}
+      strokeWidth="1.8" />
+    <path d="M12 3V6"
+      stroke={active ? '#F97316' : 'rgba(255,255,255,0.4)'}
+      strokeWidth="1.8" strokeLinecap="round" />
+    <path d="M9 3L12 6L15 3"
+      stroke={active ? '#F97316' : 'rgba(255,255,255,0.4)'}
+      strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+)
+
 const IconCard = ({ active }: { active: boolean }) => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
     <rect x="2" y="5" width="20" height="14" rx="3"
@@ -88,7 +105,8 @@ const IconProfile = ({ active }: { active: boolean }) => (
 const NAV_AFRICA = [
   { href: '/dashboard', label: 'Accueil',   Icon: IconHome },
   { href: '/send',      label: 'Envoyer',   Icon: IconSend },
-  { href: '/history',   label: 'Historique',Icon: IconHistory },
+  { href: '/topup',     label: 'Recharger', Icon: IconTopup },
+  { href: '/history',   label: 'Activité',  Icon: IconHistory },
   { href: '/profile',   label: 'Profil',    Icon: IconProfile },
 ]
 
