@@ -51,6 +51,14 @@ const IconHistory = () => (
     <path d="M12 7V12L15 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
 )
+const IconTopup = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+    <rect x="2" y="6" width="20" height="14" rx="3" stroke="currentColor" strokeWidth="2"/>
+    <path d="M2 11H22" stroke="currentColor" strokeWidth="2"/>
+    <path d="M12 3V6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M9 3L12 6L15 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+)
 const IconCopy = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
     <rect x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" strokeWidth="2"/>
@@ -130,7 +138,9 @@ export default function DashboardPage() {
   const firstName = profile?.full_name?.split(' ')[0] ?? 'Utilisateur'
 
   const quickActionsAfrica = [
-    { href: '/send',    label: 'Envoyer',    Icon: IconArrowRight, color: '#F97316', bg: 'rgba(249,115,22,0.15)' },
+    { href: '/send',    label: 'Envoyer',    Icon: IconArrowRight, color: '#F97316',              bg: 'rgba(249,115,22,0.15)' },
+    { href: '/topup',   label: 'Recharger',  Icon: IconTopup,      color: '#F97316',              bg: 'rgba(249,115,22,0.15)' },
+    { href: '/card',    label: 'Carte',      Icon: IconCard,       color: '#8B5CF6',              bg: 'rgba(139,92,246,0.15)' },
     { href: '/history', label: 'Activité',   Icon: IconHistory,    color: 'rgba(255,255,255,0.6)', bg: 'rgba(255,255,255,0.07)' },
   ]
   const quickActionsEurope = [
@@ -217,7 +227,7 @@ export default function DashboardPage() {
             {isAfrica && <div style={{ marginBottom: 20 }} />}
 
             {/* Quick actions */}
-            <div style={{ display: 'grid', gridTemplateColumns: `repeat(${quickActions.length},1fr)`, gap: 8 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: isAfrica ? '1fr 1fr' : `repeat(${quickActions.length},1fr)`, gap: 8 }}>
               {quickActions.map((a) => (
                 <Link key={a.href} href={a.href} style={{
                   background: 'rgba(255,255,255,0.06)',

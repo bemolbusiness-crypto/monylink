@@ -260,7 +260,7 @@ export default function TopupPage() {
         )}
       </div>
 
-      <BottomNav />
+      <BottomNav region="africa" />
     </div>
   )
 }
