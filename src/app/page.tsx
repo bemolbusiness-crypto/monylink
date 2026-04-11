@@ -219,6 +219,7 @@ export default function LandingPage() {
           .cta-btns{flex-direction:column!important}
           .cta-btns a{width:100%!important;justify-content:center!important}
           .trust-pills{gap:8px!important}
+          .sim-card{padding:16px!important}
         }
       `}</style>
 
@@ -373,7 +374,7 @@ export default function LandingPage() {
       </section>
 
       {/* SIMULATOR */}
-      <section className="sec" style={{ padding: '0 80px 80px', maxWidth: 1100, margin: '0 auto', position: 'relative', zIndex: 1 }}>
+      <section className="sec" style={{ padding: '0 80px 80px', maxWidth: 1100, margin: '0 auto', position: 'relative', zIndex: 1, boxSizing: 'border-box', width: '100%' }}>
         <div className="sim-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 60, alignItems: 'center' }}>
           <div className="sim-text">
             <div className="pill" style={{ background: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.2)', color: '#F97316', marginBottom: 18 }}>💱 Simulateur</div>
@@ -388,7 +389,7 @@ export default function LandingPage() {
               ))}
             </div>
           </div>
-          <div style={{ background: 'rgba(255,255,255,0.04)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 24, padding: 28, boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.07)' }}>
+          <div className="sim-card" style={{ background: 'rgba(255,255,255,0.04)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 24, padding: 28, boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.07)', overflow: 'hidden', width: '100%', boxSizing: 'border-box' }}>
             <TransferSimulator />
           </div>
         </div>
