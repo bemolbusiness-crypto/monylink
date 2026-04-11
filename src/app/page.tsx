@@ -16,8 +16,8 @@ function useFadeIn() {
 
 function TransferSimulator() {
   const [amount, setAmount] = useState(150000)
-  const fee = Math.round(amount * 0.025 + 500)
-  const euros = Math.round((amount - fee) / 655.96)
+  const CLIENT_RATE = 700 // 1 EUR = 700 FCFA (notre taux — la marge est dans le spread)
+  const euros = Math.round(amount / CLIENT_RATE)
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       <div style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 14, padding: '14px 16px' }}>
@@ -50,7 +50,7 @@ function TransferSimulator() {
         </div>
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'rgba(255,255,255,0.35)', padding: '2px 2px' }}>
-        <span>Frais : <span style={{ color: '#F97316', fontWeight: 700 }}>{fee.toLocaleString('fr-FR')} FCFA</span></span>
+        <span>Taux : <span style={{ color: '#fff', fontWeight: 700 }}>1 EUR = {CLIENT_RATE} FCFA</span></span>
         <span style={{ color: '#22D3B0', fontWeight: 600 }}>⚡ Instantané</span>
       </div>
       <Link href="/signup" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'rgba(249,115,22,0.85)', color: '#fff', borderRadius: 12, padding: '13px', fontSize: 14, fontWeight: 700, textDecoration: 'none', boxShadow: 'inset 0 3px 4px rgba(255,255,255,0.2), 0 6px 20px rgba(249,115,22,0.3)' }}>
@@ -403,9 +403,9 @@ export default function LandingPage() {
           <div>
             <div className="pill-badge" style={{ background: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.2)', color: '#F97316', marginBottom: 18 }}>💱 Simulateur</div>
             <h2 style={{ fontSize: 38, fontWeight: 900, letterSpacing: '-2px', lineHeight: 1.05, marginBottom: 14 }}>Calcule tes frais<br /><span style={{ color: '#F97316' }}>en temps réel</span></h2>
-            <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.4)', lineHeight: 1.7, marginBottom: 24 }}>Aucune surprise. Le taux et les frais sont affichés avant confirmation. 2,5 % de commission, c&apos;est tout.</p>
+            <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.4)', lineHeight: 1.7, marginBottom: 24 }}>Aucune surprise. Notre seul revenu : l&apos;écart de taux (700 FCFA vs marché). Zéro commission cachée, zéro frais supplémentaires.</p>
             <div style={{ display: 'flex', gap: 20 }}>
-              {[['2×','moins cher'],['0','frais cachés'],['<30s','délai']].map(([n,l]) => (
+              {[['700','FCFA = 1€'],['0','frais cachés'],['<30s','délai']].map(([n,l]) => (
                 <div key={l}>
                   <div style={{ fontSize: 26, fontWeight: 900, letterSpacing: -1.5, background: 'linear-gradient(135deg,#F97316,#8B5CF6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{n}</div>
                   <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', fontWeight: 500 }}>{l}</div>
@@ -438,7 +438,7 @@ export default function LandingPage() {
           {[
             { icon: '⚡', h: 'Transferts instantanés', p: "L'argent arrive en moins de 30 secondes sur Mobile Money ou l'IBAN du destinataire.", c: 'rgba(249,115,22,0.1)', b: 'rgba(249,115,22,0.2)' },
             { icon: '🔒', h: 'Sécurité renforcée', p: 'KYC biométrique, chiffrement bout-en-bout, conformité ACPR Europe.', c: 'rgba(139,92,246,0.1)', b: 'rgba(139,92,246,0.2)' },
-            { icon: '💱', h: 'Taux transparents', p: '2,5 % de commission. Taux affiché avant confirmation. Zéro frais cachés.', c: 'rgba(34,211,176,0.07)', b: 'rgba(34,211,176,0.2)' },
+            { icon: '💱', h: 'Taux transparents', p: '1 EUR = 700 FCFA. Notre marge est dans le spread, pas en frais. Taux affiché avant confirmation.', c: 'rgba(34,211,176,0.07)', b: 'rgba(34,211,176,0.2)' },
             { icon: '💰', h: 'Multi-devises', p: 'EUR, FCFA, USD, Crypto dans un seul portefeuille. Conversion en temps réel.', c: 'rgba(249,115,22,0.1)', b: 'rgba(249,115,22,0.2)' },
             { icon: '💳', h: 'Carte virtuelle Visa', p: 'Compatible Apple Pay & Google Pay. Payez partout dans le monde depuis l\'Afrique.', c: 'rgba(139,92,246,0.1)', b: 'rgba(139,92,246,0.2)' },
             { icon: '↔️', h: 'Bidirectionnel', p: 'Unique sur le marché : envois dans les deux sens. Freelances reçoivent en EUR.', c: 'rgba(34,211,176,0.07)', b: 'rgba(34,211,176,0.2)' },
