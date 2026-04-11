@@ -117,15 +117,15 @@ function Phone3D() {
           </div>
         </div>
       </div>
-      <div className="notif-float" style={{ position: 'absolute', top: '10%', right: -28, background: 'rgba(8,6,20,0.9)', backdropFilter: 'blur(20px)', border: '1px solid rgba(34,211,176,0.3)', borderRadius: 14, padding: '9px 13px', display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 8px 32px rgba(0,0,0,0.5)', animation: 'floatNotif1 4s ease-in-out infinite', zIndex: 5, whiteSpace: 'nowrap' }}>
+      <div style={{ position: 'absolute', top: '10%', right: -28, background: 'rgba(8,6,20,0.9)', backdropFilter: 'blur(20px)', border: '1px solid rgba(34,211,176,0.3)', borderRadius: 14, padding: '9px 13px', display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 8px 32px rgba(0,0,0,0.5)', animation: 'floatNotif1 4s ease-in-out infinite', zIndex: 5, whiteSpace: 'nowrap' }}>
         <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(34,211,176,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13 }}>⚡</div>
         <div><div style={{ fontSize: 11, fontWeight: 700 }}>+€47,85 reçu</div><div style={{ fontSize: 9, color: '#22D3B0', fontWeight: 600 }}>Instantané · 28s</div></div>
       </div>
-      <div className="notif-float" style={{ position: 'absolute', bottom: '20%', left: -34, background: 'rgba(8,6,20,0.9)', backdropFilter: 'blur(20px)', border: '1px solid rgba(249,115,22,0.3)', borderRadius: 14, padding: '9px 13px', display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 8px 32px rgba(0,0,0,0.5)', animation: 'floatNotif2 5s ease-in-out infinite 1.5s', zIndex: 5, whiteSpace: 'nowrap' }}>
+      <div style={{ position: 'absolute', bottom: '20%', left: -34, background: 'rgba(8,6,20,0.9)', backdropFilter: 'blur(20px)', border: '1px solid rgba(249,115,22,0.3)', borderRadius: 14, padding: '9px 13px', display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 8px 32px rgba(0,0,0,0.5)', animation: 'floatNotif2 5s ease-in-out infinite 1.5s', zIndex: 5, whiteSpace: 'nowrap' }}>
         <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(249,115,22,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13 }}>🟠</div>
         <div><div style={{ fontSize: 11, fontWeight: 700 }}>Orange Money</div><div style={{ fontSize: 9, color: '#F97316', fontWeight: 600 }}>150 000 FCFA crédités</div></div>
       </div>
-      <div className="notif-float" style={{ position: 'absolute', top: '50%', right: -36, background: 'rgba(8,6,20,0.9)', backdropFilter: 'blur(20px)', border: '1px solid rgba(139,92,246,0.3)', borderRadius: 14, padding: '9px 13px', display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 8px 32px rgba(0,0,0,0.5)', animation: 'floatNotif1 6s ease-in-out infinite 3s', zIndex: 5, whiteSpace: 'nowrap' }}>
+      <div style={{ position: 'absolute', top: '50%', right: -36, background: 'rgba(8,6,20,0.9)', backdropFilter: 'blur(20px)', border: '1px solid rgba(139,92,246,0.3)', borderRadius: 14, padding: '9px 13px', display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 8px 32px rgba(0,0,0,0.5)', animation: 'floatNotif1 6s ease-in-out infinite 3s', zIndex: 5, whiteSpace: 'nowrap' }}>
         <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(139,92,246,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13 }}>💳</div>
         <div><div style={{ fontSize: 11, fontWeight: 700 }}>Carte Visa activée</div><div style={{ fontSize: 9, color: '#8B5CF6', fontWeight: 600 }}>Apple Pay · Google Pay</div></div>
       </div>
@@ -206,8 +206,8 @@ export default function LandingPage() {
           .pricing-grid{grid-template-columns:1fr!important}
           .footer-inner{flex-direction:column!important;text-align:center!important;gap:14px!important}
           .sec{padding-left:20px!important;padding-right:20px!important}
-          .sim-grid{grid-template-columns:1fr!important;gap:28px!important}
-          .notif-float{display:none!important}
+          .sim-grid{grid-template-columns:1fr!important;gap:20px!important}
+          .sim-text{display:none!important}
         }
         @media(max-width:540px){
           .feat-grid{grid-template-columns:1fr!important}
@@ -371,7 +371,7 @@ export default function LandingPage() {
       {/* SIMULATOR */}
       <section className="sec" style={{ padding: '0 80px 80px', maxWidth: 1100, margin: '0 auto', position: 'relative', zIndex: 1 }}>
         <div className="sim-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 60, alignItems: 'center' }}>
-          <div>
+          <div className="sim-text">
             <div className="pill" style={{ background: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.2)', color: '#F97316', marginBottom: 18 }}>💱 Simulateur</div>
             <h2 style={{ fontSize: 38, fontWeight: 900, letterSpacing: '-2px', lineHeight: 1.05, marginBottom: 14 }}>Compare les frais<br /><span style={{ color: '#F97316' }}>en temps réel</span></h2>
             <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.45)', lineHeight: 1.7, marginBottom: 24 }}>Aucune surprise. Notre seul revenu est le spread de taux (700 FCFA vs ~656 FCFA marché). Pas de commission supplémentaire.</p>
