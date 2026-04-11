@@ -15,43 +15,46 @@ function useFadeIn() {
 }
 
 function TransferSimulator() {
-  const [amount, setAmount] = useState(150000)
-  const RATE = 700
-  const euros = Math.round(amount / RATE)
-  const wuFees = Math.round(amount * 0.08)
-  const wuEuros = Math.round((amount - wuFees) / 655.96)
-  const savings = euros - wuEuros
+  const [euros, setEuros] = useState(200)
+  // MonyLink : le bénéficiaire reçoit euros × 700 FCFA (taux client)
+  const mlFcfa = euros * 700
+  // WU : frais ~10% tout compris, puis conversion au taux interbancaire fixe (655.96)
+  const wuFcfa = Math.round(euros * 0.90 * 655.96)
+  const savingsFcfa = mlFcfa - wuFcfa
+  const fmt = (n: number) => n.toLocaleString('fr-FR')
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      {/* Input EUR */}
       <div style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 14, padding: '14px 16px' }}>
-        <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', marginBottom: 6, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1 }}>Tu envoies (FCFA)</div>
+        <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', marginBottom: 6, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1 }}>Tu envoies depuis l&apos;Europe (€)</div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <input type="number" value={amount} onChange={e => setAmount(Number(e.target.value))}
+          <input type="number" value={euros} onChange={e => setEuros(Math.max(1, Number(e.target.value)))}
             style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', fontSize: 26, fontWeight: 800, color: '#fff', fontFamily: 'inherit', minWidth: 0 }} />
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(249,115,22,0.15)', border: '1px solid rgba(249,115,22,0.3)', borderRadius: 9, padding: '5px 11px', flexShrink: 0 }}>
-            <span>🌍</span><span style={{ fontSize: 12, fontWeight: 700, color: '#F97316' }}>FCFA</span>
+            <span>🇪🇺</span><span style={{ fontSize: 12, fontWeight: 700, color: '#F97316' }}>EUR</span>
           </div>
         </div>
       </div>
-      <input type="range" min={20000} max={1000000} step={10000} value={amount}
-        onChange={e => setAmount(Number(e.target.value))}
+      <input type="range" min={50} max={2000} step={10} value={euros}
+        onChange={e => setEuros(Number(e.target.value))}
         style={{ width: '100%', accentColor: '#F97316', cursor: 'pointer' }} />
-      {/* Comparison */}
+      {/* Comparison FCFA reçus */}
+      <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', textAlign: 'center', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1 }}>La famille reçoit en FCFA</div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
         <div style={{ background: 'rgba(34,211,176,0.07)', border: '1px solid rgba(34,211,176,0.2)', borderRadius: 12, padding: '12px 14px' }}>
           <div style={{ fontSize: 9, color: '#22D3B0', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>✓ MonyLink</div>
-          <div style={{ fontSize: 22, fontWeight: 800, color: '#22D3B0' }}>{euros} €</div>
-          <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', marginTop: 3 }}>Taux 1€ = 700 FCFA</div>
+          <div style={{ fontSize: 19, fontWeight: 800, color: '#22D3B0' }}>{fmt(mlFcfa)}</div>
+          <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', marginTop: 3 }}>1€ = 700 FCFA · 0 frais</div>
         </div>
         <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 12, padding: '12px 14px', opacity: 0.65 }}>
           <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>✗ Western Union</div>
-          <div style={{ fontSize: 22, fontWeight: 800, color: 'rgba(255,255,255,0.5)' }}>{wuEuros} €</div>
-          <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', marginTop: 3 }}>Frais ~8%</div>
+          <div style={{ fontSize: 19, fontWeight: 800, color: 'rgba(255,255,255,0.5)' }}>{fmt(wuFcfa)}</div>
+          <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', marginTop: 3 }}>Frais ~10% + mauvais taux</div>
         </div>
       </div>
-      {savings > 0 && (
+      {savingsFcfa > 0 && (
         <div style={{ background: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.25)', borderRadius: 10, padding: '10px 14px', textAlign: 'center' }}>
-          <span style={{ fontSize: 13, fontWeight: 700, color: '#F97316' }}>Tu économises <strong style={{ fontSize: 16 }}>{savings} €</strong> avec MonyLink 🎉</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: '#F97316' }}>La famille reçoit <strong style={{ fontSize: 15 }}>+{fmt(savingsFcfa)} FCFA</strong> de plus avec MonyLink 🎉</span>
         </div>
       )}
       <Link href="/signup" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'rgba(249,115,22,0.88)', color: '#fff', borderRadius: 12, padding: '13px', fontSize: 14, fontWeight: 700, textDecoration: 'none', boxShadow: 'inset 0 3px 4px rgba(255,255,255,0.2), 0 6px 20px rgba(249,115,22,0.3)' }}>
@@ -373,10 +376,10 @@ export default function LandingPage() {
         <div className="sim-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 60, alignItems: 'center' }}>
           <div className="sim-text">
             <div className="pill" style={{ background: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.2)', color: '#F97316', marginBottom: 18 }}>💱 Simulateur</div>
-            <h2 style={{ fontSize: 38, fontWeight: 900, letterSpacing: '-2px', lineHeight: 1.05, marginBottom: 14 }}>Compare les frais<br /><span style={{ color: '#F97316' }}>en temps réel</span></h2>
-            <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.45)', lineHeight: 1.7, marginBottom: 24 }}>Aucune surprise. Notre seul revenu est le spread de taux (700 FCFA vs ~656 FCFA marché). Pas de commission supplémentaire.</p>
+            <h2 style={{ fontSize: 38, fontWeight: 900, letterSpacing: '-2px', lineHeight: 1.05, marginBottom: 14 }}>Ta famille reçoit<br /><span style={{ color: '#F97316' }}>beaucoup plus</span></h2>
+            <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.45)', lineHeight: 1.7, marginBottom: 24 }}>Pour 200€ envoyés, la famille reçoit <strong style={{ color: '#fff' }}>140 000 FCFA</strong> avec MonyLink contre ~118 000 FCFA chez Western Union. Zéro frais caché.</p>
             <div style={{ display: 'flex', gap: 28 }}>
-              {[['700','FCFA = 1€'],['0','frais cachés'],['<30s','délai']].map(([n,l]) => (
+              {[['700','FCFA par €'],['0','frais cachés'],['<30s','délai']].map(([n,l]) => (
                 <div key={l}>
                   <div style={{ fontSize: 26, fontWeight: 900, letterSpacing: -1.5, background: 'linear-gradient(135deg,#F97316,#8B5CF6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{n}</div>
                   <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', fontWeight: 500 }}>{l}</div>
@@ -397,23 +400,23 @@ export default function LandingPage() {
         <p style={{ fontSize: 17, color: 'rgba(255,255,255,0.45)', marginBottom: 40 }}>Un seul mécanisme de revenu : le spread de taux.</p>
         <div className="pricing-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16, marginBottom: 32 }}>
           {[
-            { label: 'MonyLink', rate: '1€ = 700 FCFA', fee: 'Aucun frais', total: '€ 214', highlight: true, badge: '✓ Recommandé' },
-            { label: 'Western Union', rate: '1€ ≈ 607 FCFA', fee: '+ frais ~8%', total: '€ 184', highlight: false },
-            { label: 'Transfert bancaire', rate: '1€ ≈ 620 FCFA', fee: '+ frais fixes ~15€', total: '€ 176', highlight: false },
+            { label: 'MonyLink', rate: '1€ = 700 FCFA', fee: 'Aucun frais', total: '140 000 FCFA', highlight: true, badge: '✓ Recommandé' },
+            { label: 'Western Union', rate: '1€ ≈ 590 FCFA net', fee: 'Frais ~10% + mauvais taux', total: '~118 000 FCFA', highlight: false },
+            { label: 'Virement bancaire', rate: '1€ = 655 FCFA', fee: '+ frais fixes ~15€', total: '~117 300 FCFA', highlight: false },
           ].map(p => (
             <div key={p.label} className="fade-in" style={{ background: p.highlight ? 'rgba(249,115,22,0.08)' : 'rgba(255,255,255,0.03)', backdropFilter: 'blur(16px)', border: `1px solid ${p.highlight ? 'rgba(249,115,22,0.35)' : 'rgba(255,255,255,0.07)'}`, borderRadius: 22, padding: '28px 24px', position: 'relative', boxShadow: p.highlight ? '0 0 60px rgba(249,115,22,0.1)' : 'none' }}>
               {p.badge && <div style={{ position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)', background: '#F97316', color: '#fff', fontSize: 10, fontWeight: 800, padding: '4px 14px', borderRadius: 100, whiteSpace: 'nowrap', boxShadow: '0 4px 12px rgba(249,115,22,0.4)' }}>{p.badge}</div>}
               <div style={{ fontSize: 14, fontWeight: 700, color: p.highlight ? '#F97316' : 'rgba(255,255,255,0.5)', marginBottom: 16 }}>{p.label}</div>
               <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', marginBottom: 6 }}>Taux : <strong style={{ color: p.highlight ? '#fff' : 'rgba(255,255,255,0.7)' }}>{p.rate}</strong></div>
               <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', marginBottom: 20 }}>Frais : <strong style={{ color: p.highlight ? '#22D3B0' : 'rgba(239,68,68,0.8)' }}>{p.fee}</strong></div>
-              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 1 }}>Pour 150 000 FCFA envoyés</div>
+              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 1 }}>Pour 200€ envoyés depuis l&apos;Europe</div>
               <div style={{ fontSize: 32, fontWeight: 900, color: p.highlight ? '#22D3B0' : 'rgba(255,255,255,0.45)', letterSpacing: -1 }}>{p.total}</div>
-              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', marginTop: 4 }}>reçus par le destinataire</div>
+              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', marginTop: 4 }}>FCFA reçus en Afrique</div>
             </div>
           ))}
         </div>
         <div style={{ background: 'rgba(34,211,176,0.06)', border: '1px solid rgba(34,211,176,0.15)', borderRadius: 16, padding: '16px 24px', textAlign: 'center', fontSize: 14, color: 'rgba(255,255,255,0.6)' }}>
-          💡 <strong style={{ color: '#22D3B0' }}>Exemple concret :</strong> Pour envoyer 150 000 FCFA depuis Douala à Paris — MonyLink te donne <strong style={{ color: '#fff' }}>30 € de plus</strong> que Western Union.
+          💡 <strong style={{ color: '#22D3B0' }}>Exemple concret :</strong> Pour 200€ envoyés de Paris, la famille à Douala reçoit <strong style={{ color: '#fff' }}>+22 000 FCFA de plus</strong> qu&apos;avec Western Union.
         </div>
       </section>
 
